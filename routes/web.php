@@ -19,4 +19,11 @@ Route::get('/', function () {
 
 Auth::routes();
 
+//Dashboard route
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//My Resume route
+Route::resource('resumes', 'App\Http\Controllers\ResumeController');
+
+//Public resume route
+Route::get('/resume/{user}', [App\Http\Controllers\ResumeController::class, 'publicUrl']);

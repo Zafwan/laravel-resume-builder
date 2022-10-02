@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\Resume;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -50,7 +51,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'username' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -64,11 +65,19 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'url' => '/resume/'.$data['username'],
+            'url' => 'resume/'.$data['username'],
         ]);
+
+        //Automatically create resume after register
+        $user->resume()->create([
+            'work_experience' => '<div><strong>Sample Company Sdn Bhd, </strong>Jan 2020-Jan 2022<br>Position Title<br><br>- Your responsibilities 1<br>- Your responsibilities 2</div>',
+            'education' => '<div><strong>Sample University,&nbsp;</strong>2019-2022<br>Bachelor Degree</div>',
+        ]);
+
+        return $user;
     }
 }

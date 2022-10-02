@@ -14,7 +14,12 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
+                    @foreach($user as $value)
+                        Your resume URL : <a href="{{ url($value->url) }}" target="_blank">{{ url($value->url) }}</a>
+                    @endforeach
+
+                    <br>
+                    <a class="btn btn-primary mt-5" href="{{ route('resumes.index') }}">Edit Resume</a>
                 </div>
             </div>
         </div>
